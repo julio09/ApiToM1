@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Client;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RetraitRepository;
@@ -15,7 +16,7 @@ class Retrait
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'retraits')]
+    #[ORM\ManyToOne(targetEntity: Client::class,inversedBy: 'retraits')]
     private ?client $numerodeCompte = null;
 
     #[ORM\Column(length: 8)]

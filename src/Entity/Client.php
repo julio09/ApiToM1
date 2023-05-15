@@ -2,21 +2,25 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter as FilterSearchFilter;
-use ApiPlatform\Elasticsearch\Filter\OrderFilter as FilterOrderFilter;
-use ApiPlatform\Metadata\ApiFilter;
 use App\Entity\Retrait;
 use App\Entity\Versement;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\ClientRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Doctrine\Odm\Filter\RangeFilter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-#[ApiResource]
-#[ApiFilter(FilterOrderFilter::class)]
-#[ApiFilter(FilterSearchFilter::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
+#[ApiFilter(RangeFilter::class, properties: ['Solde'])]
 class Client
 {
     #[ORM\Id]
@@ -24,20 +28,25 @@ class Client
     #[ORM\Column]
     
     private ?int $id = null;
-
+    
+    #[Groups(['read', 'write'])]
     #[ORM\Column(length: 255, unique:true)]
     private ?string $NumerodeCompte = null;
 
+    #[Groups(['read', 'write'])]
     #[ORM\Column(length: 255)]
     private ?string $Nom = null;
 
+    #[Groups(['read', 'write'])]
     #[ORM\Column]
     private ?int $Solde = null;
 
-    #[ORM\OneToMany(mappedBy: 'numerodeCompte', targetEntity: Versement::class)]
+    #[Groups(['read'])]
+    #[ORM\OneToMany(mappedBy: 'numerodeCompte', targetEntity: Versement::class,cascade:['all'], orphanRemoval: true)]
     private Collection $versements;
 
-    #[ORM\OneToMany(mappedBy: 'numerodeCompte', targetEntity: Retrait::class)]
+    #[Groups(['read'])]
+    #[ORM\OneToMany(mappedBy: 'numerodeCompte', targetEntity: Retrait::class, cascade: ['all'], orphanRemoval: true)]
     private Collection $retraits;
 
     public function __construct()

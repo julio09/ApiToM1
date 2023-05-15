@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\VersementRepository;
+use App\Entity\Client;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use App\Repository\VersementRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: VersementRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class Versement
 {
     #[ORM\Id]
@@ -15,12 +20,15 @@ class Versement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'versements')]
+    #[Groups(['read', 'write'])]
+    #[ORM\ManyToOne(targetEntity: Client::class,inversedBy: 'versements')]
     private ?client $numerodeCompte = null;
 
+    #[Groups(['read', 'write'])]
     #[ORM\Column]
     private ?int $MontantVerser = null;
 
+    #[Groups(['read', 'write'])]
     #[ORM\Column(length: 10)]
     private ?string $dateVersement = null;
 
