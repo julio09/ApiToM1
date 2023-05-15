@@ -2,17 +2,27 @@
 
 namespace App\Entity;
 
-use App\Repository\ClientRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter as FilterSearchFilter;
+use ApiPlatform\Elasticsearch\Filter\OrderFilter as FilterOrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use App\Entity\Retrait;
+use App\Entity\Versement;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ClientRepository;
+use ApiPlatform\Metadata\ApiResource;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
+#[ApiResource]
+#[ApiFilter(FilterOrderFilter::class)]
+#[ApiFilter(FilterSearchFilter::class)]
 class Client
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique:true)]

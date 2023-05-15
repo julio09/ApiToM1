@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\RetraitRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\RetraitRepository;
 
 #[ORM\Entity(repositoryClass: RetraitRepository::class)]
+#[ApiResource]
 class Retrait
 {
     #[ORM\Id]
