@@ -6,9 +6,13 @@ use App\Entity\Client;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RetraitRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RetraitRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class Retrait
 {
     #[ORM\Id]
@@ -16,12 +20,15 @@ class Retrait
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['read', 'write'])]
     #[ORM\ManyToOne(targetEntity: Client::class,inversedBy: 'retraits')]
     private ?client $numerodeCompte = null;
 
+    #[Groups(['read', 'write'])]
     #[ORM\Column(length: 8)]
     private ?string $numerodeCheque = null;
 
+    #[Groups(['read', 'write'])]
     #[ORM\Column]
     private ?int $montantdeRetrait = null;
 
